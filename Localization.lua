@@ -281,7 +281,7 @@ BCS["L"] = {
 	SPELL_SCHOOL_NATURE = "Nature",
 	SPELL_SCHOOL_SHADOW = "Shadow",
 
-	BLOCK_VALUE = "Block Value: ",
+	BLOCK_VALUE = "Block Value: %d",
 	IRONCLAD = "Healing power from Ironclad: %d",
 
 	HIT_FIRE = "Fire spells: %.f%%",
