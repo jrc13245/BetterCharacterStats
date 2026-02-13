@@ -141,6 +141,10 @@ BCS["L"] = {
 	["Increases the damage and critical strike chance of your Moonfire spell by (%d+)%%."] = "Increases the damage and critical strike chance of your Moonfire spell by (%d+)%%.",
 	["Increases the critical effect chance of your Regrowth spell by (%d+)%%."] = "Increases the critical effect chance of your Regrowth spell by (%d+)%%.",
 	["Moonkin Aura"] = "Moonkin Aura",
+	["Cat Form"] = "Cat Form",
+	["Bear Form"] = "Bear Form",
+	["Dire Bear Form"] = "Dire Bear Form",
+	["Aquatic Form"] = "Aquatic Form",
 	["Moonkin Form"] = "Moonkin Form",
 	["Tree of Life Form"] = "Tree of Life Form",
 	["Tree of Life Aura"] = "Tree of Life Aura",
@@ -188,6 +192,9 @@ BCS["L"] = {
 	["Improved Shadowform"] = "Improved Shadowform",
 	["Shadowform"] = "Shadowform",
 
+	-- warrior
+	["Increases the damage done by your offhand weapon by %d+%% and your chance to hit with your offhand weapon by (%d+)%%."] = "Increases the damage done by your offhand weapon by %d+%% and your chance to hit with your offhand weapon by (%d+)%%.",
+
 	-- defense
 	DEFENSE_TOOLTIP = [[|cffffffffDefense Skill|r]],
 	DEFENSE_TOOLTIP_SUB = [[Higher defense makes you harder to hit and makes monsters less likely to land a crushing blow.]],
@@ -206,6 +213,30 @@ BCS["L"] = {
 
 	TOTAL_AVOIDANCE_TOOLTIP = [[|cffffffffAvoidance|r]],
 	TOTAL_AVOIDANCE_TOOLTIP_SUB = [[Your total chance to avoid enemy physical attacks.]],
+
+	-- vs boss
+	BOSS_GLANCE_TOOLTIP = [[|cffffffffGlancing Blow Damage|r]],
+	BOSS_GLANCE_TOOLTIP_SUB = [[Glancing blows have a 40% chance vs a level 63 boss.
+Damage: 65% + (min(skill, 315) - 300) * 2%
+Caps at 95% damage at 315 weapon skill.]],
+
+	BOSS_MISS_TOOLTIP = [[|cffffffffAuto Attack Miss|r]],
+	BOSS_MISS_TOOLTIP_SUB = [[Miss chance vs a level 63 boss.
+Base miss: 8%
+Dual wield penalty: +19%
+Weapon skill above 300: -0.2% per point (uncapped)
+Then reduced by hit rating.]],
+
+	BOSS_CRIT_TOOLTIP = [[|cffffffffEffective Crit vs Boss|r]],
+	BOSS_CRIT_TOOLTIP_SUB = [[Effective crit chance vs a level 63 boss.
+Boss crit suppression: -3%
+Weapon skill crit bonus is already included in base crit.]],
+
+	BOSS_CRITCAP_TOOLTIP = [[|cffffffffCrit Cap (from behind)|r]],
+	BOSS_CRITCAP_TOOLTIP_SUB = [[Maximum useful crit when attacking from behind.
+Crit Cap = 100% - miss% - boss dodge% - 40% glancing
+Boss dodge: 6.5% - (min(skill, 315) - 300) * 0.1%
+No parry or block from behind.]],
 
 	-- melee
 	MELEE_HIT_TOOLTIP = [[|cffffffffMelee Hit|r]],
@@ -261,6 +292,7 @@ BCS["L"] = {
 	PLAYERSTAT_RANGED_COMBAT = "Ranged",
 	PLAYERSTAT_SPELL_COMBAT = "Spell",
 	PLAYERSTAT_SPELL_SCHOOLS = "Schools",
+	PLAYERSTAT_MELEE_BOSS = "vs Boss",
 	WEAPON_SKILL_COLON = "Skill:",
 	MELEE_HIT_RATING_COLON = "Hit Rating:",
 	RANGED_HIT_RATING_COLON = "Hit Rating:",
@@ -268,6 +300,10 @@ BCS["L"] = {
 	MELEE_CRIT_COLON = "Crit Chance:",
 	RANGED_CRIT_COLON = "Crit Chance:",
 	SPELL_CRIT_COLON = "Crit Chance:",
+	BOSS_GLANCE_COLON = "Glance %:",
+	BOSS_MISS_COLON = "Miss %:",
+	BOSS_CRIT_COLON = "Crit Chance:",
+	BOSS_CRITCAP_COLON = "Crit Cap:",
 	MANA_REGEN_COLON = "Regen:",
 	HEAL_POWER_COLON = "Healing:",
 	HASTE_COLON = "Haste:",

@@ -18,6 +18,7 @@ local _, playerClass = UnitClass("player")
 BCS.PLAYERSTAT_DROPDOWN_OPTIONS = {
 	"PLAYERSTAT_BASE_STATS",
 	"PLAYERSTAT_MELEE_COMBAT",
+	"PLAYERSTAT_MELEE_BOSS",
 	"PLAYERSTAT_RANGED_COMBAT",
 	"PLAYERSTAT_SPELL_COMBAT",
 	"PLAYERSTAT_SPELL_SCHOOLS",
@@ -687,6 +688,122 @@ function BCS:SetWeaponSkill(statFrame)
 	AddTooltip(statFrame)
 end
 
+function BCS:SetBossGlancingDamage(statFrame)
+	local text = _G[statFrame:GetName() .. "StatText"]
+	local label = _G[statFrame:GetName() .. "Label"]
+
+	label:SetText(L.BOSS_GLANCE_COLON)
+
+	local mhBase, mhMod, ohBase, ohMod = UnitAttackBothHands("player")
+	local mhSkill = mhBase + mhMod
+	local ohSkill = ohBase + ohMod
+
+	if BCS:IsDruidForm() then
+		local formSkill = UnitLevel("player") * 5
+		mhSkill = formSkill
+		ohSkill = formSkill
+	end
+
+	local mhGlance = BCS:GetGlancingDamage(mhSkill)
+
+	if OffhandHasWeapon() then
+		local ohGlance = BCS:GetGlancingDamage(ohSkill)
+		text:SetText(format("%d%% | %d%%", mhGlance, ohGlance))
+	else
+		text:SetText(format("%d%%", mhGlance))
+	end
+
+	statFrame.tooltip = L.BOSS_GLANCE_TOOLTIP
+	statFrame.tooltipSubtext = L.BOSS_GLANCE_TOOLTIP_SUB
+
+	AddTooltip(statFrame)
+end
+
+function BCS:SetBossAutoMiss(statFrame)
+	local text = _G[statFrame:GetName() .. "StatText"]
+	local label = _G[statFrame:GetName() .. "Label"]
+
+	label:SetText(L.BOSS_MISS_COLON)
+
+	local mhBase, mhMod, ohBase, ohMod = UnitAttackBothHands("player")
+	local mhSkill = mhBase + mhMod
+	local ohSkill = ohBase + ohMod
+
+	if BCS:IsDruidForm() then
+		local formSkill = UnitLevel("player") * 5
+		mhSkill = formSkill
+		ohSkill = formSkill
+	end
+
+	local isDW = OffhandHasWeapon()
+	local mhMiss = BCS:GetBossMissChance(mhSkill, isDW)
+
+	if isDW then
+		local dwSpecHit = BCS:GetDWSpecHit()
+		local ohMiss = BCS:GetBossMissChance(ohSkill, true, dwSpecHit)
+		text:SetText(format("%.1f%% | %.1f%%", mhMiss, ohMiss))
+	else
+		text:SetText(format("%.1f%%", mhMiss))
+	end
+
+	statFrame.tooltip = L.BOSS_MISS_TOOLTIP
+	statFrame.tooltipSubtext = L.BOSS_MISS_TOOLTIP_SUB
+
+	AddTooltip(statFrame)
+end
+
+function BCS:SetBossMeleeCritChance(statFrame)
+	local text = _G[statFrame:GetName() .. "StatText"]
+	local label = _G[statFrame:GetName() .. "Label"]
+
+	label:SetText(L.BOSS_CRIT_COLON)
+
+	local baseCrit = BCS:GetCritChance()
+	local bossCrit = BCS:GetBossCritChance(baseCrit)
+
+	text:SetText(format("%.2f%%", bossCrit))
+
+	statFrame.tooltip = L.BOSS_CRIT_TOOLTIP
+	statFrame.tooltipSubtext = L.BOSS_CRIT_TOOLTIP_SUB
+
+	AddTooltip(statFrame)
+end
+
+function BCS:SetBossCritCap(statFrame)
+	local text = _G[statFrame:GetName() .. "StatText"]
+	local label = _G[statFrame:GetName() .. "Label"]
+
+	label:SetText(L.BOSS_CRITCAP_COLON)
+
+	local mhBase, mhMod, ohBase, ohMod = UnitAttackBothHands("player")
+	local mhSkill = mhBase + mhMod
+	local ohSkill = ohBase + ohMod
+
+	if BCS:IsDruidForm() then
+		local formSkill = UnitLevel("player") * 5
+		mhSkill = formSkill
+		ohSkill = formSkill
+	end
+
+	local isDW = OffhandHasWeapon()
+	local mhMiss = BCS:GetBossMissChance(mhSkill, isDW)
+	local mhCap = BCS:GetBossCritCap(mhMiss, mhSkill)
+
+	if isDW then
+		local dwSpecHit = BCS:GetDWSpecHit()
+		local ohMiss = BCS:GetBossMissChance(ohSkill, true, dwSpecHit)
+		local ohCap = BCS:GetBossCritCap(ohMiss, ohSkill)
+		text:SetText(format("%.1f%% | %.1f%%", mhCap, ohCap))
+	else
+		text:SetText(format("%.1f%%", mhCap))
+	end
+
+	statFrame.tooltip = L.BOSS_CRITCAP_TOOLTIP
+	statFrame.tooltipSubtext = L.BOSS_CRITCAP_TOOLTIP_SUB
+
+	AddTooltip(statFrame)
+end
+
 function BCS:SetRangedWeaponSkill(statFrame)
 	local text = _G[statFrame:GetName() .. "StatText"]
 	local label = _G[statFrame:GetName() .. "Label"]
@@ -1137,6 +1254,13 @@ function BCS:UpdatePaperdollStats(prefix, index)
 		BCS:SetAttackPower(stat4)
 		BCS:SetHitRating(stat5, "MELEE")
 		BCS:SetMeleeCritChance(stat6)
+	elseif (index == "PLAYERSTAT_MELEE_BOSS") then
+		BCS:SetWeaponSkill(stat1)
+		BCS:SetBossGlancingDamage(stat2)
+		BCS:SetBossAutoMiss(stat3)
+		BCS:SetHitRating(stat4, "MELEE")
+		BCS:SetBossMeleeCritChance(stat5)
+		BCS:SetBossCritCap(stat6)
 	elseif (index == "PLAYERSTAT_RANGED_COMBAT") then
 		BCS:SetRangedWeaponSkill(stat1)
 		BCS:SetRangedDamage(stat2)

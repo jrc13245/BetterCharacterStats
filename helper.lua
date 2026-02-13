@@ -557,6 +557,10 @@ local function ScanAllTalents()
 							BCScache["talents"].spell_hit = BCScache["talents"].spell_hit + tonumber(value)
 						end
 
+						-- Warrior Dual Wield Specialization
+						_, _, value = strfind(text, L["Increases the damage done by your offhand weapon by %d+%% and your chance to hit with your offhand weapon by (%d+)%%."])
+						if value then BCScache["talents"].oh_hit = BCScache["talents"].oh_hit + tonumber(value) end
+
 						-- ===== SPELL HIT (school-specific) =====
 						-- Mage Elemental Precision
 						_, _, value = strfind(text, L["Reduces the chance that the opponent can resist your Frost and Fire spells by (%d)%%."])
@@ -1722,6 +1726,43 @@ function BCS:GetRangedWeaponSkill()
 	BCScache["skills"].ranged = BCS:GetWeaponSkillForWeaponType(itemType)
 
 	return BCScache["skills"].ranged
+end
+
+-- ===== vs Boss helpers (level 63, defense 315) =====
+
+function BCS:IsDruidForm()
+	if playerClass ~= "DRUID" then return false end
+	return BCS:GetPlayerAura(L["Cat Form"]) or BCS:GetPlayerAura(L["Bear Form"])
+		or BCS:GetPlayerAura(L["Dire Bear Form"]) or BCS:GetPlayerAura(L["Moonkin Form"])
+		or BCS:GetPlayerAura(L["Tree of Life Form"]) or BCS:GetPlayerAura(L["Aquatic Form"])
+end
+
+function BCS:GetDWSpecHit()
+	return BCScache["talents"].oh_hit
+end
+
+function BCS:GetGlancingDamage(weaponSkill)
+	local cappedSkill = min(weaponSkill, 315)
+	return 65 + max(cappedSkill - 300, 0) * 2
+end
+
+function BCS:GetBossMissChance(weaponSkill, isDualWield, extraHit)
+	local hitFromSkill = max(weaponSkill - 300, 0) * 0.2
+	local hitRating = BCS:GetHitRating()
+	local baseMiss = 8
+	local dwPenalty = isDualWield and 19 or 0
+	return max(0, baseMiss + dwPenalty - hitFromSkill - hitRating - (extraHit or 0))
+end
+
+function BCS:GetBossCritChance(baseCrit)
+	return max(0, baseCrit - 3)
+end
+
+function BCS:GetBossCritCap(missChance, weaponSkill)
+	local cappedSkill = min(weaponSkill, 315)
+	local bossDodge = max(0, 6.5 - max(cappedSkill - 300, 0) * 0.1)
+	local glancingChance = 40
+	return 100 - missChance - bossDodge - glancingChance
 end
 
 --https://us.forums.blizzard.com/en/wow/t/block-value-formula/283718/18
